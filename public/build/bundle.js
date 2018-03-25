@@ -20080,6 +20080,10 @@ var _styles = __webpack_require__(/*! ./styles */ "./src/components/containers/s
 
 var _styles2 = _interopRequireDefault(_styles);
 
+var _superagent = __webpack_require__(/*! superagent */ "./node_modules/superagent/lib/client.js");
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20108,6 +20112,23 @@ var Comments = function (_Component) {
     }
 
     _createClass(Comments, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            _superagent2.default.get('/api/comment').query(null).set('Accept', 'application/json').end(function (err, response) {
+                if (err) {
+                    alert('ERROR' + err.message);
+                    return;
+                }
+                //console.log(JSON.stringify(response.body));
+                var results = response.body.results;
+                _this2.setState({
+                    list: results
+                });
+            });
+        }
+    }, {
         key: 'submitComment',
         value: function submitComment() {
             console.log('submitComment: ' + JSON.stringify(this.state.comment));
@@ -20224,6 +20245,8 @@ var _superagent = __webpack_require__(/*! superagent */ "./node_modules/superage
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
+var _utils = __webpack_require__(/*! ../../utils */ "./src/utils/index.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20255,15 +20278,12 @@ var Zones = function (_Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            console.log('componentDidMount: ');
-
-            _superagent2.default.get('/api/zone').query(null).set('Accept', 'application/json').end(function (err, response) {
+            _utils.APIManager.get('/api/zone', null, function (err, results) {
                 if (err) {
-                    alert('ERROR' + err);
+                    alert('ERROR' + err.message);
                     return;
                 }
-                console.log(JSON.stringify(response.body));
-                var results = response.body.results;
+
                 _this2.setState({
                     list: results
                 });
@@ -20647,6 +20667,74 @@ exports.default = {
         }
     }
 };
+
+/***/ }),
+
+/***/ "./src/utils/APIManager.js":
+/*!*********************************!*\
+  !*** ./src/utils/APIManager.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _superagent = __webpack_require__(/*! superagent */ "./node_modules/superagent/lib/client.js");
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+
+    get: function get(url, params, callback) {
+        _superagent2.default.get(url).query(params).set('Accept', 'application/json').end(function (err, response) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            var confirmation = response.body.confirmation;
+            if (confirm != 'success') {
+                callback({ message: response.body.message }, null);
+                return;
+            }
+            callback(null, response.body);
+        });
+    },
+
+    post: function post() {},
+
+    put: function put() {},
+
+    delete: function _delete() {}
+};
+
+/***/ }),
+
+/***/ "./src/utils/index.js":
+/*!****************************!*\
+  !*** ./src/utils/index.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _APIManager = __webpack_require__(/*! ./APIManager */ "./src/utils/APIManager.js");
+
+var _APIManager2 = _interopRequireDefault(_APIManager);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ })
 
