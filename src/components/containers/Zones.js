@@ -1,5 +1,5 @@
-import React, {Component} from  'react';
-import Zone from '../presentation/Zone';
+import React, { Component } from  'react';
+import { CreateZone, Zone } from '../presentation';
 import { APIManager } from '../../utils';
 
 class Zones extends Component{
@@ -7,10 +7,7 @@ class Zones extends Component{
     constructor(){
         super();
         this.state = {
-            zone: {
-                name: '',
-                zipCode: ''
-            },
+            selected: 0,
             list: []
         }
     }
@@ -27,21 +24,12 @@ class Zones extends Component{
         });
     }
 
-    updateZone(event){
-        console.log('update zone: ' + event.target.id + '==' + event.target.value);
-        let updatedZone = Object.assign({}, this.state.zone);
-        updatedZone[event.target.id] = event.target.value;
-        this.setState({
-            zone: updatedZone
-        });
-    }
+    addZone(zone){
+        
+        let updatedZone = Object.assign({}, zone);
 
-    addZone(){
-        console.log('ADD ZONE: ' + JSON.stringify(this.state.zone));
-
-        let updatedZone = Object.assign({}, this.state.zone);
-        updatedZone['zipCodes'] = updatedZone.zipCode.split(',');
-
+        console.log('updatedZone: ' + JSON.stringify(updatedZone));
+       
         APIManager.post('/api/zone', updatedZone, (err, response) => {
             if(err){
                 alert('ERROR' + err.message);
@@ -56,10 +44,18 @@ class Zones extends Component{
         });
     }
 
+    selectZone(index){
+        console.log('selectZone: ' + index);
+        this.setState({
+            selected: index
+        });
+    }
+
     render(){
         const listItems = this.state.list.map((zone, i) => {
+            let selected = (i == this.state.selected);
             return (
-                <li key={i}><Zone currentZone={zone} /></li>
+                <li key={i}><Zone index={i} select={this.selectZone.bind(this)} isSelected={selected} currentZone={zone} /></li>
             );
         });
 
@@ -69,9 +65,7 @@ class Zones extends Component{
                     {listItems}
                 </ol>
 
-                <input id="name" onChange={this.updateZone.bind(this)} className="form-control" type="text" placeholder="Name" /><br />
-                <input id="zipCode" onChange={this.updateZone.bind(this)} className="form-control" type="text" placeholder="Zip Code" /><br />
-                <button onClick={this.addZone.bind(this)} className="btn btn-danger">Add Zone</button>
+               <CreateZone onCreate={this.addZone.bind(this)} />
             </div>
         );
     }
