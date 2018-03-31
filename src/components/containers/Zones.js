@@ -1,14 +1,16 @@
 import React, { Component } from  'react';
 import { CreateZone, Zone } from '../presentation';
 import { APIManager } from '../../utils';
+//import store from '../../stores/store';
+import actions from '../../actions/actions';
+import { connect } from 'react-redux';
 
 class Zones extends Component{
 
     constructor(){
         super();
         this.state = {
-            selected: 0,
-            list: []
+ 
         }
     }
 
@@ -17,10 +19,15 @@ class Zones extends Component{
             if(err){
                 alert('ERROR' + err.message);
                 return;
-            }      
-            this.setState({
-                list: response.results
-            });
+            }  
+            
+            // dispatch action to reducer
+            const zones = response.results;
+            this.props.zonesReceived(zones);
+            //store.currentStore().dispatch(actions.zonesReceived(zones));
+            // this.setState({
+            //   list: response.results
+            // });
         });
     }
 
@@ -28,32 +35,27 @@ class Zones extends Component{
         
         let updatedZone = Object.assign({}, zone);
 
-        console.log('updatedZone: ' + JSON.stringify(updatedZone));
-       
         APIManager.post('/api/zone', updatedZone, (err, response) => {
             if(err){
                 alert('ERROR' + err.message);
                 return;
             }
-            console.log('ZONE CREATED: ' + JSON.stringify(response));
-            let updatedList = Object.assign([], this.state.list);
-            updatedList.push(response.result);
-            this.setState({
-                list: updatedList
-            });
+            
+            this.props.zoneCreated(response.result);
         });
     }
 
     selectZone(index){
         console.log('selectZone: ' + index);
-        this.setState({
-            selected: index
-        });
+        this.props.selectZone(index);
+        // this.setState({
+        //   selected: index
+        //});
     }
 
     render(){
-        const listItems = this.state.list.map((zone, i) => {
-            let selected = (i == this.state.selected);
+        const listItems = this.props.list.map((zone, i) => {
+            let selected = (i == this.props.selected);
             return (
                 <li key={i}><Zone index={i} select={this.selectZone.bind(this)} isSelected={selected} currentZone={zone} /></li>
             );
@@ -71,4 +73,24 @@ class Zones extends Component{
     }
 }
 
-export default Zones;
+// take values from global state/store and assign them to props line 62
+const stateToProps = (state) => {
+    return {
+        // state is the store from store.js, 
+        // state.zone is line 11 zone from store.js 
+        // state.zone.list is initialState.list from zoneReducer.js
+        list: state.zone.list,
+        selected: state.zone.selectedZone
+    }
+}
+
+const dispatchToProps = (dispatch) => {
+    return {
+        zonesReceived: (zones) => dispatch(actions.zonesReceived(zones)),
+        zoneCreated: (zone) => dispatch(actions.zoneCreated(zone)),
+        selectZone: (index) => dispatch(actions.selectZone(index))
+    }
+}
+
+// connect Zones component to the store
+export default connect(stateToProps, dispatchToProps)(Zones);
