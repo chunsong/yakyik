@@ -23192,6 +23192,154 @@ _reactDom2.default.render(_react2.default.createElement(App, null), document.get
 
 /***/ }),
 
+/***/ "./src/components/containers/Account.js":
+/*!**********************************************!*\
+  !*** ./src/components/containers/Account.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _utils = __webpack_require__(/*! ../../utils */ "./src/utils/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Account = function (_Component) {
+    _inherits(Account, _Component);
+
+    function Account() {
+        _classCallCheck(this, Account);
+
+        var _this = _possibleConstructorReturn(this, (Account.__proto__ || Object.getPrototypeOf(Account)).call(this));
+
+        _this.state = {
+            profile: {
+                username: '',
+                password: ''
+            }
+        };
+        return _this;
+    }
+
+    _createClass(Account, [{
+        key: 'updateProfile',
+        value: function updateProfile(event) {
+            event.preventDefault();
+            //console.log(event.target.id + ' == ' + event.target.value);
+            var updatedProfile = Object.assign({}, this.state.profile);
+            updatedProfile[event.target.id] = event.target.value;
+            this.setState({
+                profile: updatedProfile
+            });
+        }
+    }, {
+        key: 'login',
+        value: function login(event) {
+            event.preventDefault();
+            console.log(JSON.stringify(this.state.profile));
+            if (this.state.profile.username.length == 0) {
+                alert('Please enter your username');
+                return;
+            }
+            if (this.state.profile.password.length == 0) {
+                alert('Please enter your password');
+                return;
+            }
+
+            _utils.APIManager.post('/account/login', this.state.profile, function (err, response) {
+                if (err) {
+                    alert(err.message);
+                    return;
+                }
+                console.log(JSON.stringify(response));
+            });
+        }
+    }, {
+        key: 'signup',
+        value: function signup(event) {
+            event.preventDefault();
+            console.log(JSON.stringify(this.state.profile));
+            if (this.state.profile.username.length == 0) {
+                alert('Please enter your username');
+                return;
+            }
+            if (this.state.profile.password.length == 0) {
+                alert('Please enter your password');
+                return;
+            }
+
+            _utils.APIManager.post('/account/register', this.state.profile, function (err, response) {
+                if (err) {
+                    alert(err.message);
+                    return;
+                }
+                console.log(JSON.stringify(response));
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'h2',
+                    null,
+                    'Login'
+                ),
+                _react2.default.createElement('input', { id: 'username', onChange: this.updateProfile.bind(this), type: 'text', placeholder: 'username' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { id: 'password', onChange: this.updateProfile.bind(this), type: 'password', placeholder: 'password' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.login.bind(this) },
+                    'Log In'
+                ),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'h2',
+                    null,
+                    'Sign Up'
+                ),
+                _react2.default.createElement('input', { id: 'username', onChange: this.updateProfile.bind(this), type: 'text', placeholder: 'username' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { id: 'password', onChange: this.updateProfile.bind(this), type: 'password', placeholder: 'password' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.signup.bind(this) },
+                    'Join'
+                )
+            );
+        }
+    }]);
+
+    return Account;
+}(_react.Component);
+
+exports.default = Account;
+
+/***/ }),
+
 /***/ "./src/components/containers/Comments.js":
 /*!***********************************************!*\
   !*** ./src/components/containers/Comments.js ***!
@@ -23526,6 +23674,41 @@ exports.default = (0, _reactRedux.connect)(stateToProps, dispatchToProps)(Zones)
 
 /***/ }),
 
+/***/ "./src/components/containers/index.js":
+/*!********************************************!*\
+  !*** ./src/components/containers/index.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Comments = exports.Zones = exports.Account = undefined;
+
+var _Account = __webpack_require__(/*! ./Account */ "./src/components/containers/Account.js");
+
+var _Account2 = _interopRequireDefault(_Account);
+
+var _Zones = __webpack_require__(/*! ./Zones */ "./src/components/containers/Zones.js");
+
+var _Zones2 = _interopRequireDefault(_Zones);
+
+var _Comments = __webpack_require__(/*! ./Comments */ "./src/components/containers/Comments.js");
+
+var _Comments2 = _interopRequireDefault(_Comments);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.Account = _Account2.default;
+exports.Zones = _Zones2.default;
+exports.Comments = _Comments2.default;
+
+/***/ }),
+
 /***/ "./src/components/containers/styles.js":
 /*!*********************************************!*\
   !*** ./src/components/containers/styles.js ***!
@@ -23591,13 +23774,7 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Zones = __webpack_require__(/*! ../containers/Zones */ "./src/components/containers/Zones.js");
-
-var _Zones2 = _interopRequireDefault(_Zones);
-
-var _Comments = __webpack_require__(/*! ../containers/Comments */ "./src/components/containers/Comments.js");
-
-var _Comments2 = _interopRequireDefault(_Comments);
+var _containers = __webpack_require__(/*! ../containers */ "./src/components/containers/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23628,12 +23805,13 @@ var Home = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-md-4' },
-            _react2.default.createElement(_Zones2.default, null)
+            _react2.default.createElement(_containers.Account, null),
+            _react2.default.createElement(_containers.Zones, null)
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-md-8' },
-            _react2.default.createElement(_Comments2.default, null)
+            _react2.default.createElement(_containers.Comments, null)
           )
         )
       );
